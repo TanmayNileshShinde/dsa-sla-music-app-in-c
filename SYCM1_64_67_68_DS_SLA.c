@@ -26,7 +26,7 @@ void enqueueLinear(Song s) {
     }
     l_rear++;
     linearQueue[l_rear] = s;
-    printf("\nAdded: %s\n", s.title);
+    printf("\nAdded: ID %d - %s\n", s.id, s.title);
 }
 
 int dequeueLinear(Song *s) {
@@ -50,8 +50,8 @@ void viewUpNext() {
     }
     printf("\n--- Up Next ---\n");
     for (int i = l_front; i <= l_rear; i++) {
-        printf("  %d. %s by %s\n", 
-               (i - l_front + 1), linearQueue[i].title, linearQueue[i].artist);
+        printf("  %d. ID: %d - %s by %s\n", 
+               (i - l_front + 1), linearQueue[i].id, linearQueue[i].title, linearQueue[i].artist);
     }
 }
 
@@ -86,8 +86,8 @@ void viewRecentlyPlayed() {
     printf("\n--- Recently Played ---\n");
     int curr = c_rear;
     for (int i = 0; i < c_count; i++) {
-        printf("  %d. %s by %s\n", 
-               (i + 1), circularQueue[curr].title, circularQueue[curr].artist);
+        printf("  %d. ID: %d - %s by %s\n", 
+               (i + 1), circularQueue[curr].id, circularQueue[curr].title, circularQueue[curr].artist);
         curr = (curr - 1 + CIRCULAR_SIZE) % CIRCULAR_SIZE;
     }
 }
@@ -132,7 +132,7 @@ int main() {
 
             case 2:
                 if (dequeueLinear(&s)) {
-                    printf("\nPlayed: %s\n", s.title);
+                    printf("\nPlayed: ID %d - %s\n", s.id, s.title);
                     enqueueCircular(s);
                 }
                 break;
