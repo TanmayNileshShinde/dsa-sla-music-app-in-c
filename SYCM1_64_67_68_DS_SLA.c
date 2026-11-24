@@ -127,13 +127,6 @@ int main() {
     printf("     Linear Queue (Size: 10) & Circular Queue (Size: 5)          \n");
     printf("=================================================================\n");
 
-    // Preload 3 initial songs into Linear Queue for immediate testing
-    Song demo1 = {101, "Blinding Lights", "The Weeknd"};
-    Song demo2 = {102, "Shape of You", "Ed Sheeran"};
-    Song demo3 = {103, "Starboy", "The Weeknd"};
-    enqueueLinear(demo1);
-    enqueueLinear(demo2);
-    enqueueLinear(demo3);
 
     while (1) {
         printf("\n======================= MENU =======================\n");
