@@ -52,15 +52,15 @@ int dequeueLinear(Song *s) {
 /* Display: View all upcoming songs in the Linear Queue */
 void viewUpNext() {
     if (l_front == -1 || l_front > l_rear) {
-        printf("\n[Linear Queue] Up Next queue is currently empty.\n");
+        printf("\n[Queue] Up Next queue is currently empty.\n");
         return;
     }
-    printf("\n================ UP NEXT (LINEAR QUEUE) ================\n");
+    printf("\n======================== UP NEXT ========================\n");
     for (int i = l_front; i <= l_rear; i++) {
         printf("  %2d. [ID: %d] %-25s | Artist: %s\n", 
                (i - l_front + 1), linearQueue[i].id, linearQueue[i].title, linearQueue[i].artist);
     }
-    printf("========================================================\n");
+    printf("=========================================================\n");
 }
 
 /* ==========================================================================
@@ -95,17 +95,17 @@ void enqueueCircular(Song s) {
 /* Display: View recently played songs in Circular Queue */
 void viewRecentlyPlayed() {
     if (c_count == 0) {
-        printf("\n[Circular Queue] Recently Played history is empty.\n");
+        printf("\n[Recently Played] History is empty.\n");
         return;
     }
-    printf("\n============= RECENTLY PLAYED (CIRCULAR QUEUE) =============\n");
+    printf("\n==================== RECENTLY PLAYED ====================\n");
     int curr = c_rear;
     for (int i = 0; i < c_count; i++) {
         printf("  %d. [ID: %d] %-25s | Artist: %s\n", 
                (i + 1), circularQueue[curr].id, circularQueue[curr].title, circularQueue[curr].artist);
         curr = (curr - 1 + CIRCULAR_SIZE) % CIRCULAR_SIZE; // Most recent first
     }
-    printf("============================================================\n");
+    printf("=========================================================\n");
 }
 
 /* Helper to read safe strings with spaces */
@@ -137,10 +137,10 @@ int main() {
 
     while (1) {
         printf("\n======================= MENU =======================\n");
-        printf(" 1. Add Song (Linear Queue)\n");
-        printf(" 2. Remove Song (Linear Queue -> Circular Queue)\n");
-        printf(" 3. View Up Next (Linear Queue)\n");
-        printf(" 4. View Recently Played (Circular Queue)\n");
+        printf(" 1. Add Song\n");
+        printf(" 2. Remove Song\n");
+        printf(" 3. View Up Next\n");
+        printf(" 4. View Recently Played\n");
         printf(" 5. Exit\n");
         printf("====================================================\n");
         printf("Enter your choice (1-5): ");
