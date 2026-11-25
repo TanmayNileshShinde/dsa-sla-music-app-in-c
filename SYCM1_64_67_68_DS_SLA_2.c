@@ -5,7 +5,6 @@
 #define LINEAR_SIZE 10
 #define CIRCULAR_SIZE 5
 
-/* Base Song Structure */
 typedef struct {
     int id;
     char title[50];
@@ -13,16 +12,12 @@ typedef struct {
     char genre[30];
 } Song;
 
-/* =======================================================
-   REVIEW 1 MODULES: LINEAR & CIRCULAR QUEUES (CO1)
-   ======================================================= */
-
-/* Linear Queue - Up Next */
+/* Linear Queue */
 Song linearQueue[LINEAR_SIZE];
 int l_front = -1;
 int l_rear = -1;
 
-/* Circular Queue - Recently Played */
+/* Circular Queue */
 Song circularQueue[CIRCULAR_SIZE];
 int c_front = -1;
 int c_rear = -1;
@@ -99,10 +94,7 @@ void viewRecentlyPlayed() {
     }
 }
 
-/* ========================================================
-   REVIEW 2 MODULE: DOUBLY LINKED LIST PLAYLIST (CO2)
-   (To be implemented by Bhavik Waykole - Roll 64)
-   ======================================================== */
+/* Doubly Linked List - Custom Playlist */
 
 typedef struct PlaylistNode {
     Song song;
@@ -185,11 +177,7 @@ void viewPlaylist() {
     }
 }
 
-
-/* ========================================================
-   REVIEW 2 MODULE: BINARY SEARCH TREE GENRE CATALOG (CO3)
-   (Implemented by Tanmay Shinde - Roll 67)
-   ======================================================== */
+/* Binary Search Tree - Genre Catalog */
 
 typedef struct GenreNode {
     char genre[30];
@@ -221,7 +209,6 @@ GenreNode* insertGenreBST(GenreNode *root, const char *genre) {
     } else if (cmp > 0) {
         root->right = insertGenreBST(root->right, genre);
     }
-    /* cmp == 0: genre already exists in tree, no duplicate */
     return root;
 }
 
@@ -255,11 +242,6 @@ void postorderGenres(GenreNode *root) {
     }
 }
 
-/* ========================================================
-   REVIEW 2 MODULE: BST SEARCH & MENU INTEGRATION (CO3)
-   (To be implemented by Aditya Shah - Roll 68)
-   ======================================================== */
-
 int searchGenreBST(GenreNode *root, const char *genre) {
     if (root == NULL) {
         return 0;
@@ -274,8 +256,6 @@ int searchGenreBST(GenreNode *root, const char *genre) {
     }
 }
 
-
-/* Helper to safely read a line from stdin */
 void readLine(char *buffer, int size) {
     if (fgets(buffer, size, stdin) != NULL) {
         size_t len = strlen(buffer);
@@ -285,9 +265,7 @@ void readLine(char *buffer, int size) {
     }
 }
 
-/* ========================================================
-   MAIN CONSOLE CONTROLLER
-   ======================================================== */
+/* Main Menu */
 
 int main() {
     int choice;
