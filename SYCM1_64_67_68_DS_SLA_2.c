@@ -260,7 +260,19 @@ void postorderGenres(GenreNode *root) {
    (To be implemented by Aditya Shah - Roll 68)
    ======================================================== */
 
-/* Placeholder: Aditya will implement searchGenreBST here */
+int searchGenreBST(GenreNode *root, const char *genre) {
+    if (root == NULL) {
+        return 0;
+    }
+    int cmp = strcmp(genre, root->genre);
+    if (cmp == 0) {
+        return 1;
+    } else if (cmp < 0) {
+        return searchGenreBST(root->left, genre);
+    } else {
+        return searchGenreBST(root->right, genre);
+    }
+}
 
 
 /* Helper to safely read a line from stdin */
@@ -402,7 +414,18 @@ int main() {
                 break;
 
             case 11:
-                printf("\n[Feature under development by Aditya (Roll 68) - BST Search]\n");
+                if (genreRoot == NULL) {
+                    printf("\nNo genres recorded in tree yet.\n");
+                } else {
+                    char searchKey[30];
+                    printf("\nEnter Genre to search: ");
+                    readLine(searchKey, sizeof(searchKey));
+                    if (searchGenreBST(genreRoot, searchKey)) {
+                        printf("\nGenre '%s' found in tree!\n", searchKey);
+                    } else {
+                        printf("\nGenre '%s' not found in tree!\n", searchKey);
+                    }
+                }
                 break;
 
             case 12:
