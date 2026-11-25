@@ -104,7 +104,86 @@ void viewRecentlyPlayed() {
    (To be implemented by Bhavik Waykole - Roll 64)
    ======================================================== */
 
-/* Placeholder: Bhavik will implement PlaylistNode and functions here */
+typedef struct PlaylistNode {
+    Song song;
+    struct PlaylistNode *prev;
+    struct PlaylistNode *next;
+} PlaylistNode;
+
+PlaylistNode *playlistHead = NULL;
+
+void addToPlaylist(Song s) {
+    PlaylistNode *newNode = (PlaylistNode *)malloc(sizeof(PlaylistNode));
+    if (!newNode) {
+        printf("\nMemory allocation failed!\n");
+        return;
+    }
+    newNode->song = s;
+    newNode->next = NULL;
+    newNode->prev = NULL;
+
+    if (playlistHead == NULL) {
+        playlistHead = newNode;
+    } else {
+        PlaylistNode *temp = playlistHead;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        temp->next = newNode;
+        newNode->prev = temp;
+    }
+    printf("\nAdded to Playlist: ID %d - %s\n", s.id, s.title);
+}
+
+void removeFromPlaylist(int id) {
+    if (playlistHead == NULL) {
+        printf("\nPlaylist is empty!\n");
+        return;
+    }
+
+    PlaylistNode *curr = playlistHead;
+    while (curr != NULL && curr->song.id != id) {
+        curr = curr->next;
+    }
+
+    if (curr == NULL) {
+        printf("\nSong with ID %d not found in playlist.\n", id);
+        return;
+    }
+
+    if (curr == playlistHead) {
+        playlistHead = curr->next;
+        if (playlistHead != NULL) {
+            playlistHead->prev = NULL;
+        }
+    } else {
+        if (curr->prev != NULL) {
+            curr->prev->next = curr->next;
+        }
+        if (curr->next != NULL) {
+            curr->next->prev = curr->prev;
+        }
+    }
+
+    printf("\nRemoved from Playlist: ID %d - %s\n", curr->song.id, curr->song.title);
+    free(curr);
+}
+
+void viewPlaylist() {
+    if (playlistHead == NULL) {
+        printf("\nPlaylist is empty.\n");
+        return;
+    }
+    printf("\n--- Custom Playlist ---\n");
+    PlaylistNode *temp = playlistHead;
+    int count = 1;
+    while (temp != NULL) {
+        printf("  %d. ID: %d - %s by %s [%s]\n",
+               count++, temp->song.id, temp->song.title,
+               temp->song.artist, temp->song.genre);
+        temp = temp->next;
+    }
+}
 
 
 /* ========================================================
@@ -263,9 +342,33 @@ int main() {
                 break;
 
             case 5:
+                printf("\nEnter Song ID: ");
+                fgets(buffer, sizeof(buffer), stdin);
+                sscanf(buffer, "%d", &s.id);
+
+                printf("Enter Song Name: ");
+                readLine(s.title, sizeof(s.title));
+
+                printf("Enter Artist: ");
+                readLine(s.artist, sizeof(s.artist));
+
+                printf("Enter Genre: ");
+                readLine(s.genre, sizeof(s.genre));
+
+                addToPlaylist(s);
+                genreRoot = insertGenreBST(genreRoot, s.genre);
+                break;
+
             case 6:
+                printf("\nEnter Song ID to remove from playlist: ");
+                fgets(buffer, sizeof(buffer), stdin);
+                int remId;
+                sscanf(buffer, "%d", &remId);
+                removeFromPlaylist(remId);
+                break;
+
             case 7:
-                printf("\n[Feature under development by Bhavik (Roll 64) - Doubly Linked List]\n");
+                viewPlaylist();
                 break;
 
             case 8:
