@@ -106,7 +106,7 @@ PlaylistNode *playlistHead = NULL;
 
 void addToPlaylist(Song s) {
     PlaylistNode *newNode = (PlaylistNode *)malloc(sizeof(PlaylistNode));
-    if (!newNode) {
+    if (newNode == NULL) {
         printf("\nMemory allocation failed!\n");
         return;
     }
@@ -187,26 +187,24 @@ typedef struct GenreNode {
 
 GenreNode *genreRoot = NULL;
 
-GenreNode* createGenreNode(const char *genre) {
+GenreNode* createGenreNode(char genre[]) {
     GenreNode *newNode = (GenreNode *)malloc(sizeof(GenreNode));
-    if (!newNode) {
+    if (newNode == NULL) {
         return NULL;
     }
-    strncpy(newNode->genre, genre, 29);
-    newNode->genre[29] = '\0';
+    strcpy(newNode->genre, genre);
     newNode->left = NULL;
     newNode->right = NULL;
     return newNode;
 }
 
-GenreNode* insertGenreBST(GenreNode *root, const char *genre) {
+GenreNode* insertGenreBST(GenreNode *root, char genre[]) {
     if (root == NULL) {
         return createGenreNode(genre);
     }
-    int cmp = strcmp(genre, root->genre);
-    if (cmp < 0) {
+    if (strcmp(genre, root->genre) < 0) {
         root->left = insertGenreBST(root->left, genre);
-    } else if (cmp > 0) {
+    } else if (strcmp(genre, root->genre) > 0) {
         root->right = insertGenreBST(root->right, genre);
     }
     return root;
@@ -242,14 +240,13 @@ void postorderGenres(GenreNode *root) {
     }
 }
 
-int searchGenreBST(GenreNode *root, const char *genre) {
+int searchGenreBST(GenreNode *root, char genre[]) {
     if (root == NULL) {
         return 0;
     }
-    int cmp = strcmp(genre, root->genre);
-    if (cmp == 0) {
+    if (strcmp(genre, root->genre) == 0) {
         return 1;
-    } else if (cmp < 0) {
+    } else if (strcmp(genre, root->genre) < 0) {
         return searchGenreBST(root->left, genre);
     } else {
         return searchGenreBST(root->right, genre);
@@ -266,13 +263,16 @@ HashNode *hashTable[HASH_SIZE] = {NULL};
 
 int hashFunction(int id) {
     int h = id % HASH_SIZE;
-    return (h < 0) ? -h : h;
+    if (h < 0) {
+        h = -h;
+    }
+    return h;
 }
 
 void insertHash(Song s) {
     int idx = hashFunction(s.id);
     HashNode *newNode = (HashNode *)malloc(sizeof(HashNode));
-    if (!newNode) {
+    if (newNode == NULL) {
         return;
     }
     newNode->song = s;
@@ -311,15 +311,6 @@ void deleteFromHash(int id) {
     free(curr);
 }
 
-void readLine(char *buffer, int size) {
-    if (fgets(buffer, size, stdin) != NULL) {
-        size_t len = strlen(buffer);
-        if (len > 0 && buffer[len - 1] == '\n') {
-            buffer[len - 1] = '\0';
-        }
-    }
-}
-
 void freeAllMemory() {
     while (playlistHead != NULL) {
         PlaylistNode *tmp = playlistHead;
@@ -337,9 +328,8 @@ void freeAllMemory() {
 
 /* Main Menu */
 int main() {
-    int choice;
+    int choice, status;
     Song s;
-    char buffer[100];
 
     while (1) {
         printf("\n================ MENU ================\n");
@@ -359,10 +349,12 @@ int main() {
         printf("======================================\n");
         printf("Enter your choice (1-13): ");
 
-        if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
+        status = scanf("%d", &choice);
+        if (status == EOF) {
             break;
         }
-        if (sscanf(buffer, "%d", &choice) != 1) {
+        if (status != 1) {
+            while (getchar() != '\n');
             printf("\nInvalid input!\n");
             continue;
         }
@@ -370,8 +362,8 @@ int main() {
         switch (choice) {
             case 1:
                 printf("\nEnter Song ID: ");
-                fgets(buffer, sizeof(buffer), stdin);
-                if (sscanf(buffer, "%d", &s.id) != 1) {
+                if (scanf("%d", &s.id) != 1) {
+                    while (getchar() != '\n');
                     printf("\nInvalid Song ID!\n");
                     break;
                 }
@@ -381,13 +373,13 @@ int main() {
                 }
 
                 printf("Enter Song Name: ");
-                readLine(s.title, sizeof(s.title));
+                scanf(" %[^\n]", s.title);
 
                 printf("Enter Artist: ");
-                readLine(s.artist, sizeof(s.artist));
+                scanf(" %[^\n]", s.artist);
 
                 printf("Enter Genre: ");
-                readLine(s.genre, sizeof(s.genre));
+                scanf(" %[^\n]", s.genre);
 
                 addToPlaylist(s);
                 insertHash(s);
@@ -401,12 +393,14 @@ int main() {
                 }
                 viewPlaylist();
                 printf("\nEnter Song ID to remove: ");
-                fgets(buffer, sizeof(buffer), stdin);
                 int remId;
-                if (sscanf(buffer, "%d", &remId) == 1) {
-                    if (removeFromPlaylist(remId)) {
-                        deleteFromHash(remId);
-                    }
+                if (scanf("%d", &remId) != 1) {
+                    while (getchar() != '\n');
+                    printf("\nInvalid Song ID!\n");
+                    break;
+                }
+                if (removeFromPlaylist(remId)) {
+                    deleteFromHash(remId);
                 }
                 break;
             }
@@ -422,9 +416,9 @@ int main() {
                 }
                 viewPlaylist();
                 printf("\nEnter Song ID to queue: ");
-                fgets(buffer, sizeof(buffer), stdin);
                 int qId;
-                if (sscanf(buffer, "%d", &qId) != 1) {
+                if (scanf("%d", &qId) != 1) {
+                    while (getchar() != '\n');
                     printf("\nInvalid Song ID!\n");
                     break;
                 }
@@ -488,7 +482,7 @@ int main() {
                 } else {
                     char searchKey[30];
                     printf("\nEnter Genre to search: ");
-                    readLine(searchKey, sizeof(searchKey));
+                    scanf(" %[^\n]", searchKey);
                     if (searchGenreBST(genreRoot, searchKey)) {
                         printf("\nGenre '%s' found!\n", searchKey);
                     } else {
@@ -499,9 +493,9 @@ int main() {
 
             case 12: {
                 printf("\nEnter Song ID to search: ");
-                fgets(buffer, sizeof(buffer), stdin);
                 int searchId;
-                if (sscanf(buffer, "%d", &searchId) != 1) {
+                if (scanf("%d", &searchId) != 1) {
+                    while (getchar() != '\n');
                     printf("\nInvalid Song ID!\n");
                     break;
                 }
